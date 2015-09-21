@@ -1,0 +1,37 @@
+## hbase shell
+
+create 'test','cf'
+
+put 'test','row1', 'cf:cq1','row1_value1'
+put 'test','row1', 'cf:cq2','row1_value2'
+put 'test','row1', 'cf:cq3','row1_value3'
+put 'test','row1', 'cf:cq4','row1_value4'
+
+put 'test','row2', 'cf:cq1','row2_value1'
+put 'test','row2', 'cf:cq2','row2_value2'
+put 'test','row2', 'cf:cq3','row2_value3'
+put 'test','row2', 'cf:cq4','row2_value4'
+
+put 'test','row3', 'cf:cq5','row3_value5'
+put 'test','row3', 'cf:cq6','row3_value6'
+
+scan 'test'
+
+
+## hive sql
+
+CREATE EXTERNAL TABLE log(key string, id string, type string, price int)
+STORED BY 'org.apache.hadoop.hive.hbase.HBaseStorageHandler' 
+WITH SERDEPROPERTIES ("hbase.columns.mapping" = ":key,cf:id,cf:type,cf:price") TBLPROPERTIES("hbase.table.name" = "log");
+
+CREATE EXTERNAL TABLE count(key string, likeCnt bigint, viewCnt bigint, orderCnt bigint, orderAmount bigint)
+STORED BY 'org.apache.hadoop.hive.hbase.HBaseStorageHandler' 
+WITH SERDEPROPERTIES ("hbase.columns.mapping" = ":key,cf:likeCnt#b,cf:viewCnt#b,cf:orderCnt#b,cf:orderAmount#b") TBLPROPERTIES("hbase.table.name" = "count");
+
+## 查看資料
+
+select * from log;
+select * from count;
+
+## 計算
+select log.id,sum(log.price) as amount from log where log.type='order' group by log.id;
