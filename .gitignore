@@ -1,2 +1,4 @@
 source/
 exe/
+.DS_Store
+.Rhistory
