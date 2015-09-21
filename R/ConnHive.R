@@ -1,5 +1,5 @@
 # Set JAVA_HOME, set max. memory, and load rJava library
-Sys.setenv(JAVA_HOME='/Library/Java/JavaVirtualMachines/jdk1.7.0_75.jdk/Contents/Home')
+# Sys.setenv(JAVA_HOME='/Library/Java/JavaVirtualMachines/jdk1.7.0_75.jdk/Contents/Home')
 
 if(!require(DBI)){
   install.packages("DBI",dep=TRUE)
@@ -18,15 +18,27 @@ if(!require(RJDBC)){
 # Output Java version
 .jinit(parameters="-Xmx1024m")
 print(.jcall("java/lang/System", "S", "getProperty", "java.version"))
-for(l in list.files('/Users/Mitake/Cookie/lib/impala/2.5.22.1040/JDBC4/')){ 
-  .jaddClassPath(paste("/Users/Mitake/Cookie/lib/impala/2.5.22.1040/JDBC4/",l,sep=""))
+
+current.path <- getwd()
+jdbc.path <- "hive/JDBC4"
+driver.jar.name <- "HiveJDBC4.jar"
+driver.package.name <- "com.cloudera.hive.jdbc4.HS2Driver"
+
+class.path <- paste(current.path, jdbc.path, sep="/")
+
+for(file.name in list.files(class.path)){ 
+  .jaddClassPath(paste(class.path, file.name, sep="/"))
 }
 .jclassPath()
 
-drv <- JDBC("com.cloudera.impala.jdbc4.Driver","/Users/Mitake/Cookie/lib/impala/2.5.22.1040/JDBC4/ImpalaJDBC4.jar",identifier.quote="`")
-conn <- dbConnect(drv, "jdbc:impala://192.168.60.250:21050")
+drv <- JDBC(driver.package.name,
+            paste(current.path, jdbc.path, driver.jar.name, sep="/"),
+            identifier.quote="`")
 
-myData <- dbGetQuery(conn, "select p.* from t1000_pid_count p")
-#str(myData)
+conn <- dbConnect(drv, "jdbc:hive2://192.168.60.101:10000")
 
-conn.close()
+myData <- dbGetQuery(conn, "SELECT * FROM default.log")
+str(myData)
+myData
+
+dbDisconnect(conn)
