@@ -1,6 +1,8 @@
 # Set JAVA_HOME, set max. memory, and load rJava library
 # Sys.setenv(JAVA_HOME='/Library/Java/JavaVirtualMachines/jdk1.7.0_75.jdk/Contents/Home')
 
+# setwd("~/Cookie/git/LabHadoop/R")
+
 if(!require(DBI)){
   install.packages("DBI",dep=TRUE)
   library(DBI)
@@ -37,8 +39,31 @@ drv <- JDBC(driver.package.name,
 
 conn <- dbConnect(drv, "jdbc:hive2://192.168.60.101:10000")
 
-myData <- dbGetQuery(conn, "SELECT * FROM default.log")
+myData <- dbGetQuery(conn, "SELECT * FROM default.count")
 str(myData)
-myData
+
+data <- myData
+
+## barplot
+
+### viewcnt
+vector <- data$count.viewcnt
+names(vector) <- data$count.key
+barplot(vector, main = "barplot of viewcnt")
+
+## plot and model
+
+### orderamount ~ ordercnt
+plot(data$count.orderamount ~ data$count.ordercnt)
+data.lm = lm(data$count.orderamount ~ data$count.ordercnt)
+abline(data.lm, col="red")
+summary(data.lm)
+
+## Pie Chart
+
+### likecnt
+slices <- data$count.likecnt
+lbls <- data$count.key
+pie(slices, labels = lbls, main="Pie Chart of likecnt")
 
 dbDisconnect(conn)
