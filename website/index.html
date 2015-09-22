@@ -6,15 +6,48 @@
 		<!--<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>-->
 		<script src="js/jquery-1.11.3.min.js"></script>
 		<script>
-			//var rootURL = "http://192.168.60.100/api";
-			var rootURL = "http://192.168.60.101:8090/api";
 
-			function postAction(msgid, id, action, price) {
+			var rootURL = "http://192.168.60.101:8090/api";
+			//var rootURL = "http://localhost:8090/api";
+
+			var uuid = function() {
+			    var buf = new Uint32Array(4);
+			    window.crypto.getRandomValues(buf);
+			    var idx = -1;
+			    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+			        idx++;
+			        var r = (buf[idx>>3] >> ((idx%8)*4))&15;
+			        var v = c == 'x' ? r : (r&0x3|0x8);
+			        return v.toString(16);
+			    });
+			};
+			var updateRole = function(msg) {
+				$("#role").html(msg);
+			    $("#role2").html(msg);
+			}
+
+			var index = Math.floor((Math.random() * 3));
+			var uid = uuid();
+			var tid = ["U001", "U002", "U003"];
+			var names = ["學者", "工程師", "醫生"];
+			var money = [35000, 65000, 150000];
+
+			var postAction = function(msgid, id, action, price) {
 				//alert(msgid+":"+id+":"+action);
+				$("#" + msgid).css({"background":"#DFD"});
+
+				if (price > 0 && (money[index] - price) < 0) {
+					$("#" + msgid).html("商品編號：" +id +", 無法購買現金不足");
+					$("#" + msgid).css({"background":"#FDD"});
+					$("#" + msgid).fadeIn(200).fadeOut(200);
+					return;
+				}
 				mydata = {
 					"data" : {
 						"id" : id,
-						"price" : price
+						"price" : price,
+						"uid": uid,
+						"tid": tid[index]
 					}
 				};
 				$.ajax({
@@ -27,14 +60,16 @@
 			        dataType: "json",
 			        success: function(data){
 			        	$("#" + msgid).html("商品編號：" +id +", 動作:" +action +" 已執行");
-						$("#" + msgid).fadeIn(500).fadeOut(500);
+						$("#" + msgid).fadeIn(200).fadeOut(200);
+						if (price > 0) {
+							money[index] = money[index] - price;
+							updateRole("角色：" + names[index] + ", 剩餘可消費金額：" + money[index]);
+                        }
 			        }
 			    });
-				
-				
 			}
 			$(document).ready(function(e){
-				
+				updateRole("角色：" + names[index] + ", 剩餘可消費金額：" + money[index]);
 			});
 		</script>
 		<style>
@@ -111,7 +146,7 @@
 				padding: 10px;
 				margin: auto;
 				border: 1px solid grey;
-				background: #DDD;
+				background: #DFD;
 				font-size: 30px;
 				text-align: center;
 				border-radius: 15px;
@@ -122,12 +157,11 @@
 				padding: 10px;
 				margin: auto;
 				border: 1px solid grey;
-				background: #DDD;
+				background: #DFD;
 				font-size: 30px;
 				text-align: center;
 				border-radius: 15px;
 				position: absolute;
-				
 			}
 			#header {
 				height: 60px;
@@ -140,80 +174,82 @@
 	<body>
 		<div id="header"></div>
 		<ul id="itable">
+			<li id="role"></li>
 			<li id="myhr"></li>
 			<li id="msg"></li>
 			<li id="inode">
-				<div id="iname">1. House</div>
+				<div id="iname">A. Car</div>
 				<div id="ibody">
-					<img src="img/item1.png" height="180" width="180" />
+					<img src="img/car.png" height="180" width="180" />
 				</div>
-				<div id="iprice">10,000 $</div>
+				<div id="iprice">120,000 $</div>
 				<div id="ifooter">
-					<a href="javascript:postAction('msg','1','view');">view</a>
-					<a href="javascript:postAction('msg','1','like');">like</a>
-					<a href="javascript:postAction('msg','1','order','10000');">order</a>
+					<a href="javascript:postAction('msg','A','view');">view</a>
+					<a href="javascript:postAction('msg','A','like');">like</a>
+					<a href="javascript:postAction('msg','A','order','120000');">order</a>
 				</div>
 			</li>
 			<li id="inode">
-				<div id="iname">2. House</div>
+				<div id="iname">B. Notebook</div>
 				<div id="ibody">
-					<img src="img/item1.png" height="180" width="180" />
+					<img src="img/notebook.png" height="180" width="180" />
 				</div>
-				<div id="iprice">10,000 $</div>
+				<div id="iprice">40,000 $</div>
 				<div id="ifooter">
-					<a href="javascript:postAction('msg','2','view');">view</a>
-					<a href="javascript:postAction('msg','2','like');">like</a>
-					<a href="javascript:postAction('msg','2','order','10000');">order</a>
+					<a href="javascript:postAction('msg','B','view');">view</a>
+					<a href="javascript:postAction('msg','B','like');">like</a>
+					<a href="javascript:postAction('msg','B','order','40000');">order</a>
 				</div>
 			</li>
 			<li id="inode">
-				<div id="iname">3. House</div>
+				<div id="iname">C. iPhone</div>
 				<div id="ibody">
-					<img src="img/item1.png" height="180" width="180" />
+					<img src="img/iphone.png" height="180" width="180" />
 				</div>
-				<div id="iprice">10,000 $</div>
+				<div id="iprice">20,000 $</div>
 				<div id="ifooter">
-					<a href="javascript:postAction('msg','3','view');">view</a>
-					<a href="javascript:postAction('msg','3','like');">like</a>
-					<a href="javascript:postAction('msg','3','order','10000');">order</a>
+					<a href="javascript:postAction('msg','C','view');">view</a>
+					<a href="javascript:postAction('msg','C','like');">like</a>
+					<a href="javascript:postAction('msg','C','order','20000');">order</a>
 				</div>
 			</li>
+			<li id="role2"></li>
 			<li id="myhr"></li>
 			<li id="msg2"></li>
 			<li id="inode">
-				<div id="iname">4. House</div>
+				<div id="iname">D. Apple</div>
 				<div id="ibody">
-					<img src="img/item1.png" height="180" width="180" />
+					<img src="img/apple.png" height="180" width="180" />
 				</div>
-				<div id="iprice">10,000 $</div>
+				<div id="iprice">1,000 $</div>
 				<div id="ifooter">
-					<a href="javascript:postAction('msg2','4','view');">view</a>
-					<a href="javascript:postAction('msg2','4','like');">like</a>
-					<a href="javascript:postAction('msg2','4','order','10000');">order</a>
+					<a href="javascript:postAction('msg2','D','view');">view</a>
+					<a href="javascript:postAction('msg2','D','like');">like</a>
+					<a href="javascript:postAction('msg2','D','order','1000');">order</a>
 				</div>
 			</li>
 			<li id="inode">
-				<div id="iname">5. House</div>
+				<div id="iname">E. Book</div>
 				<div id="ibody">
-					<img src="img/item1.png" height="180" width="180" />
+					<img src="img/book.png" height="180" width="180" />
 				</div>
-				<div id="iprice">10,000 $</div>
+				<div id="iprice">5,000 $</div>
 				<div id="ifooter">
-					<a href="javascript:postAction('msg2','5','view');">view</a>
-					<a href="javascript:postAction('msg2','5','like');">like</a>
-					<a href="javascript:postAction('msg2','5','order','10000');">order</a>
+					<a href="javascript:postAction('msg2','E','view');">view</a>
+					<a href="javascript:postAction('msg2','E','like');">like</a>
+					<a href="javascript:postAction('msg2','E','order','5000');">order</a>
 				</div>
 			</li>
 			<li id="inode">
-				<div id="iname">6. House</div>
+				<div id="iname">F. Book</div>
 				<div id="ibody">
-					<img src="img/item1.png" height="180" width="180" />
+					<img src="img/book2.png" height="180" width="180" />
 				</div>
-				<div id="iprice">10,000 $</div>
+				<div id="iprice">2,000 $</div>
 				<div id="ifooter">
-					<a href="javascript:postAction('msg2','6','view');">view</a>
-					<a href="javascript:postAction('msg2','6','like');">like</a>
-					<a href="javascript:postAction('msg2','6','order','10000');">order</a>
+					<a href="javascript:postAction('msg2','F','view');">view</a>
+					<a href="javascript:postAction('msg2','F','like');">like</a>
+					<a href="javascript:postAction('msg2','F','order','2000');">order</a>
 				</div>
 			</li>
 			<li id="myhr">

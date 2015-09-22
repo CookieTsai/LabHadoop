@@ -51,6 +51,20 @@ vector <- data$count.viewcnt
 names(vector) <- data$count.key
 barplot(vector, main = "barplot of viewcnt")
 
+## Pie Chart
+
+### likecnt
+slices <- data$count.likecnt
+lbls <- data$count.key
+pie(slices, labels = lbls, main="Pie Chart of likecnt")
+
+
+
+myData <- dbGetQuery(conn, "SELECT * FROM default.log")
+str(myData)
+
+data <- myData
+
 ## plot and model
 
 ### orderamount ~ ordercnt
@@ -59,11 +73,5 @@ data.lm = lm(data$count.orderamount ~ data$count.ordercnt)
 abline(data.lm, col="red")
 summary(data.lm)
 
-## Pie Chart
-
-### likecnt
-slices <- data$count.likecnt
-lbls <- data$count.key
-pie(slices, labels = lbls, main="Pie Chart of likecnt")
 
 dbDisconnect(conn)
