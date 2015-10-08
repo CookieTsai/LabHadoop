@@ -20,9 +20,9 @@ scan 'test'
 
 ## hive sql
 
-CREATE EXTERNAL TABLE log(key string, id string, type string, price int)
+CREATE EXTERNAL TABLE log(key string, id string, type string, price int, uid string, tid string)
 STORED BY 'org.apache.hadoop.hive.hbase.HBaseStorageHandler' 
-WITH SERDEPROPERTIES ("hbase.columns.mapping" = ":key,cf:id,cf:type,cf:price") TBLPROPERTIES("hbase.table.name" = "log");
+WITH SERDEPROPERTIES ("hbase.columns.mapping" = ":key,cf:id,cf:type,cf:price,cf:uid,cf:tid") TBLPROPERTIES("hbase.table.name" = "log");
 
 CREATE EXTERNAL TABLE count(key string, likeCnt bigint, viewCnt bigint, orderCnt bigint, orderAmount bigint)
 STORED BY 'org.apache.hadoop.hive.hbase.HBaseStorageHandler' 
