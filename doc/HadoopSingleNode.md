@@ -1,9 +1,8 @@
 	注意事項：
 		1. 所有指令皆使用 root 身份執行，僅供練習使用。
-		2. 前置步驟在 master, slaver1, slaver2 都必須做一遍。
-		3. PDF 格式部分文字會失真，輸入時請注意符號是否正確。
+		2. PDF 格式部分文字會失真，輸入時請注意符號是否正確。
 
-# Hadoop + HBase + Hive 建置手冊（完全分布式）
+# Hadoop + HBase + Hive 建置手冊（偽叢集模式）
 
 ## 目錄
 
@@ -26,8 +25,6 @@
 | OS            | IP             | Host Name    |
 | :-----------: | :------------: | :----------: |
 | CentOS 6.7    | 192.168.60.101 | master       |
-| CentOS 6.7    | 192.168.60.102 | slaver1      |
-| CentOS 6.7    | 192.168.60.103 | slaver2      |
 
 [TOP](#toc_0)
 
@@ -113,9 +110,7 @@
 
 > 增加內容
 > 
-	192.168.60.101 master 
-	192.168.60.102 slaver1 
-	192.168.60.103 slaver2
+	192.168.60.101 master
 	
 #### 編輯 profile
 
@@ -146,8 +141,7 @@
 
 > 覆蓋內容
 > 
-	slaver1
-	slaver2
+	master
 
 #### 編輯 core-site.xml
 
@@ -229,23 +223,12 @@
 > 
 	export JAVA_HOME=/usr/java/java
 	
-#### Copy to slavers
-
-	$ scp -rp /opt/hadoop slaver1:/opt
-	$ scp -rp /opt/hadoop slaver2:/opt
-	$ scp –rp /etc/hosts slaver1:/etc
-	$ scp –rp /etc/hosts slaver2:/etc
-	$ scp -rp /etc/profile root@slaver1:/etc
-	$ scp -rp /etc/profile root@slaver2:/etc
-
 #### Hadoop format
 
 	$ hadoop namenode -format
 	
 #### Reboot all hosts
 	
-	$ ssh slaver1 reboot
-	$ ssh slaver2 reboot
 	$ reboot
 	
 ### 啟動 Apache Hadoop
@@ -337,8 +320,7 @@
 
 > 覆蓋內容
 > 
-	slaver1
-	slaver2
+	master
 	
 #### 編輯 hbase-env.sh
 
@@ -379,13 +361,6 @@
 
 	rm -rf $HBASE_HOME/lib/slf4j-log4j12-1.6.4.jar
 
-#### Copy to slavers
-
-	$ scp -rp /opt/hbase root@slaver1:/opt
-	$ scp -rp /opt/hbase root@slaver2:/opt
-	$ scp -rp /etc/profile root@slaver1:/etc
-	$ scp -rp /etc/profile root@slaver2:/etc
-	
 ### 啟動 HBase
 
 	$ start-hbase.sh
@@ -432,10 +407,6 @@
 #### 連線方式（新版）
 	
 	$ beeline -u jdbc:hive2://master:10000
-		
-#### 連線方式（傳統 可不用啟動 hiveserver2）
-
-	$ hive
 	
 [TOP](#toc_0)
 
