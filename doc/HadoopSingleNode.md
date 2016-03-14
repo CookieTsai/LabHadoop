@@ -118,7 +118,7 @@
 
 > 增加內容
 > 
-	export HADOOP_HOME=/opt/hadoop/
+	export HADOOP_HOME=/opt/hadoop
 	export HADOOP_MAPRED_HOME=$HADOOP_HOME
 	export HADOOP_COMMON_HOME=$HADOOP_HOME
 	export HADOOP_HDFS_HOME=$HADOOP_HOME
@@ -130,6 +130,9 @@
 	export HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/lib"
 	## HADOOP-9450
 	export HADOOP_USER_CLASSPATH_FIRST=true
+        ## Add 2016/03/14
+        export HADOOP_YARN_HOME=$HADOOP_HOME
+        export HADOOP_PREFIX=$HADOOP_HOME
 	
 #### 載入 profile
 
@@ -218,10 +221,11 @@
 #### 編輯 hadoop-env.sh
 
 	$ vim $HADOOP_HOME/etc/hadoop/hadoop-env.sh
-	
-> 修改內容
-> 
-	export JAVA_HOME=/usr/java/java
+
+> 增修內容
+>
+        export JAVA_HOME=/usr/java/java
+        export HADOOP_LOG_DIR=/opt/hadoop/logs	
 	
 #### Hadoop format
 
