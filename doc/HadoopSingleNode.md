@@ -2,8 +2,6 @@
 		1. 所有指令皆使用 root 身份執行，僅供練習使用。
 		2. PDF 格式部分文字會失真，輸入時請注意符號是否正確。
 
-# Hadoop + HBase + Hive 建置手冊（偽叢集模式）
-
 ## 目錄
 
 [toc]
@@ -130,9 +128,9 @@
 	export HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/lib"
 	## HADOOP-9450
 	export HADOOP_USER_CLASSPATH_FIRST=true
-        ## Add 2016/03/14
-        export HADOOP_YARN_HOME=$HADOOP_HOME
-        export HADOOP_PREFIX=$HADOOP_HOME
+	## Add 2016/03/14
+	export HADOOP_YARN_HOME=$HADOOP_HOME
+	export HADOOP_PREFIX=$HADOOP_HOME
 	
 #### 載入 profile
 
@@ -224,8 +222,8 @@
 
 > 增修內容
 >
-        export JAVA_HOME=/usr/java/java
-        export HADOOP_LOG_DIR=/opt/hadoop/logs	
+	export JAVA_HOME=/usr/java/java
+	export HADOOP_LOG_DIR=/opt/hadoop/logs	
 	
 #### Hadoop format
 
