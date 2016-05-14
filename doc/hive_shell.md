@@ -10,7 +10,7 @@ From File
 
 ```
 CREATE EXTERNAL TABLE log (
-	 pid STRING,
+    pid STRING,
     cnt INT,
     price INT
 )
